@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -118,6 +119,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleMissingParameter(MissingServletRequestParameterException ex,
                                                                       HttpServletRequest request) {
         return build(HttpStatus.BAD_REQUEST, "Missing required parameter '" + ex.getParameterName() + "'", request, null);
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ResponseEntity<Map<String, Object>> handleInvalidSort(PropertyReferenceException ex,
+                                                                 HttpServletRequest request) {
+        return build(HttpStatus.BAD_REQUEST, "Invalid sort field: " + ex.getPropertyName(), request, null);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

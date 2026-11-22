@@ -92,7 +92,7 @@ public class AuthController {
         body.put("token", tokenProvider.generateToken(user));
         body.put("tokenType", "Bearer");
         body.put("expiresIn", tokenProvider.getExpirationSeconds());
-        body.put("user", safeUser(user));
+        body.put("user", loginUser(user));
         return ResponseEntity.ok(body);
     }
 
@@ -105,6 +105,15 @@ public class AuthController {
         technicianRepository.findByUserId(user.getId())
                 .ifPresent(technician -> body.put("technician", technicianProfile(technician)));
 
+        return body;
+    }
+
+    private Map<String, Object> loginUser(User user) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("id", user.getId());
+        body.put("fullName", user.getFullName());
+        body.put("email", user.getEmail());
+        body.put("role", user.getRole().name());
         return body;
     }
 
