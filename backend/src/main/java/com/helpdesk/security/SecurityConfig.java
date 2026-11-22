@@ -84,6 +84,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/employees/**").hasRole("ADMIN")
 
                         // Technician management is admin-only; a technician may read their own profile.
+                        .requestMatchers(HttpMethod.GET, "/api/technicians").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/technicians").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/technicians/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/technicians/**").hasRole("ADMIN")
