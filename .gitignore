@@ -1,0 +1,28 @@
+# Java / Maven
+target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+
+# Secrets and local environment
+.env
+backend/.env
+
+# IDE and editor files
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+*.swp
+
+# Logs
+*.log
+logs/
+
+# Node / frontend
+node_modules/
+
+# OS files
+.DS_Store
