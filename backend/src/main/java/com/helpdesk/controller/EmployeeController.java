@@ -1,5 +1,6 @@
 package com.helpdesk.controller;
 
+import com.helpdesk.EmailNormalizer;
 import com.helpdesk.exception.ConflictException;
 import com.helpdesk.exception.ResourceNotFoundException;
 import com.helpdesk.model.Employee;
@@ -67,11 +68,12 @@ public class EmployeeController {
             user.setFullName(request.fullName());
         }
         if (request.email() != null) {
-            boolean changed = !request.email().equalsIgnoreCase(user.getEmail());
-            if (changed && userRepository.existsByEmail(request.email())) {
+            String email = EmailNormalizer.normalize(request.email());
+            boolean changed = !email.equals(user.getEmail());
+            if (changed && userRepository.existsByEmail(email)) {
                 throw new ConflictException("Email is already registered");
             }
-            user.setEmail(request.email());
+            user.setEmail(email);
         }
         if (request.enabled() != null) {
             user.setEnabled(request.enabled());

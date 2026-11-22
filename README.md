@@ -8,7 +8,7 @@ frontend developer; `frontend/` is currently only a placeholder.
 
 ```text
 helpdesk-project/
-├── backend/            Spring Boot REST API (Java 17, Spring Boot 3.5.3)
+├── backend/            Spring Boot REST API (Java 17, Spring Boot 3.5.16)
 │   ├── scripts/
 │   │   └── api-test.sh End-to-end HTTP test suite
 │   ├── src/main/java/com/helpdesk/

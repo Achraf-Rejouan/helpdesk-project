@@ -88,6 +88,10 @@ Request:
 Validation: `fullName` 3–100, valid `email`, `password` at least 8 characters,
 `department` 2–100, `phone` optional up to 30 characters.
 
+Emails are trimmed and stored in lowercase. Registration, login, technician
+creation/update, employee update, and the admin seed all use the same normalized
+form, so `Test@X.com`, `test@x.com`, and `TEST@X.COM` are the same account.
+
 Response `201 Created`:
 
 ```json

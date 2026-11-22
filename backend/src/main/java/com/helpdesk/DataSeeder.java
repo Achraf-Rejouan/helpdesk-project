@@ -44,7 +44,7 @@ public class DataSeeder implements CommandLineRunner {
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         this.passwordEncoder = passwordEncoder;
-        this.adminEmail = adminEmail;
+        this.adminEmail = EmailNormalizer.normalize(adminEmail);
         this.adminPassword = adminPassword;
     }
 

@@ -1,5 +1,6 @@
 package com.helpdesk.controller;
 
+import com.helpdesk.EmailNormalizer;
 import com.helpdesk.exception.ConflictException;
 import com.helpdesk.exception.UnauthorizedException;
 import com.helpdesk.model.Employee;
@@ -53,13 +54,14 @@ public class AuthController {
     @PostMapping("/register")
     @Transactional
     public ResponseEntity<Map<String, Object>> register(@Valid @RequestBody RegisterRequest request) {
-        if (userRepository.existsByEmail(request.email())) {
+        String email = EmailNormalizer.normalize(request.email());
+        if (userRepository.existsByEmail(email)) {
             throw new ConflictException("Email is already registered");
         }
 
         User user = new User();
         user.setFullName(request.fullName());
-        user.setEmail(request.email());
+        user.setEmail(email);
         user.setPassword(passwordEncoder.encode(request.password()));
         user.setRole(UserRole.EMPLOYEE); // never taken from the request
         user.setEnabled(true);
@@ -78,7 +80,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@Valid @RequestBody LoginRequest request) {
-        User user = userRepository.findByEmail(request.email())
+        User user = userRepository.findByEmail(EmailNormalizer.normalize(request.email()))
                 .orElseThrow(() -> new UnauthorizedException("Invalid email or password"));
 
         if (!Boolean.TRUE.equals(user.getEnabled())) {

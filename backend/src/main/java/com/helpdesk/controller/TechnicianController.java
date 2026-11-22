@@ -1,5 +1,6 @@
 package com.helpdesk.controller;
 
+import com.helpdesk.EmailNormalizer;
 import com.helpdesk.exception.ConflictException;
 import com.helpdesk.exception.ForbiddenException;
 import com.helpdesk.exception.ResourceNotFoundException;
@@ -58,13 +59,14 @@ public class TechnicianController {
     @PostMapping
     @Transactional
     public ResponseEntity<Technician> create(@Valid @RequestBody CreateTechnicianRequest request) {
-        if (userRepository.existsByEmail(request.email())) {
+        String email = EmailNormalizer.normalize(request.email());
+        if (userRepository.existsByEmail(email)) {
             throw new ConflictException("Email is already registered");
         }
 
         User user = new User();
         user.setFullName(request.fullName());
-        user.setEmail(request.email());
+        user.setEmail(email);
         user.setPassword(passwordEncoder.encode(request.password()));
         user.setRole(UserRole.TECHNICIAN); // never taken from the request
         user.setEnabled(true);
@@ -114,11 +116,12 @@ public class TechnicianController {
             user.setFullName(request.fullName());
         }
         if (request.email() != null) {
-            boolean changed = !request.email().equalsIgnoreCase(user.getEmail());
-            if (changed && userRepository.existsByEmail(request.email())) {
+            String email = EmailNormalizer.normalize(request.email());
+            boolean changed = !email.equals(user.getEmail());
+            if (changed && userRepository.existsByEmail(email)) {
                 throw new ConflictException("Email is already registered");
             }
-            user.setEmail(request.email());
+            user.setEmail(email);
         }
         if (request.enabled() != null) {
             user.setEnabled(request.enabled());

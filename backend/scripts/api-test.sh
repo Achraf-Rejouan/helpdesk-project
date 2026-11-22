@@ -155,6 +155,20 @@ EB_ID="$(printf '%s' "$BODY" | jq -r '.employee.id')"
 call POST /auth/register "" "$(jq -n --arg e "$EA_EMAIL" '{fullName:"Duplicate",email:$e,password:"Password123",department:"IT"}')"
 expect_code "duplicate email is 409" 409
 
+# Email normalization: stored and compared in lowercase, so login and uniqueness
+# are case-insensitive.
+CASE_EMAIL="Case.Test.$STAMP@Example.COM"
+CASE_EMAIL_LOWER="case.test.$STAMP@example.com"
+register_employee "Case Test" "$CASE_EMAIL" "$PASSWORD" "IT"
+expect_code "register mixed-case email" 201
+expect_field "registered email is stored lowercase" ".email" "$CASE_EMAIL_LOWER"
+CASE_TOKEN="$(login_token "$CASE_EMAIL_LOWER" "$PASSWORD")"
+if [ -n "$CASE_TOKEN" ]; then pass "login with lowercase form of mixed-case email"; else fail "login with lowercase form of mixed-case email"; fi
+CASE_TOKEN="$(login_token "CASE.TEST.$STAMP@EXAMPLE.COM" "$PASSWORD")"
+if [ -n "$CASE_TOKEN" ]; then pass "login with uppercase form of mixed-case email"; else fail "login with uppercase form of mixed-case email"; fi
+call POST /auth/register "" "$(jq -n --arg e "CASE.TEST.$STAMP@EXAMPLE.COM" '{fullName:"Case Duplicate",email:$e,password:"Password123",department:"IT"}')"
+expect_code "registering same email in different case is 409" 409
+
 call POST /auth/register "" '{"fullName":"A","email":"not-an-email","password":"short","department":""}'
 expect_code "invalid registration fields are 400" 400
 expect_field "validation reports email" '(.fieldErrors | has("email"))' "true"
