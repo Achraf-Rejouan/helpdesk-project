@@ -1,8 +1,7 @@
 # HelpDesk
 
-Academic mini project: an IT support ticket system with a Spring Boot REST API and
-PostgreSQL running in Docker. The React frontend is built separately by the
-frontend developer; `frontend/` is currently only a placeholder.
+Academic mini project: an IT support ticket system with a Spring Boot REST API,
+PostgreSQL running in Docker, and a React single-page frontend.
 
 ## Repository layout
 
@@ -20,7 +19,7 @@ helpdesk-project/
 │   ├── .env.example
 │   ├── run.sh
 │   └── pom.xml
-├── frontend/           Placeholder only
+├── frontend/           React 19 + Vite SPA (see frontend/README.md)
 ├── docs/
 │   ├── PROJECT_SPEC.md The agreed project specification
 │   └── API.md          API contract for the frontend developer
@@ -32,6 +31,7 @@ helpdesk-project/
 
 - Java 17 or newer (`java -version`)
 - Maven 3.9+ (`mvn -version`) — the Maven wrapper `backend/mvnw` is also included
+- Node.js 20+ and npm (`node --version`, `npm --version`) for the frontend
 - Docker with Docker Compose (`docker --version`, `docker compose version`)
 - `curl` and `jq` for the API test script
 
@@ -141,6 +141,23 @@ curl -s -H 'Content-Type: application/json' \
   http://localhost:8080/api/auth/login
 # -> token + user (admin only for the default dev credentials)
 ```
+
+## 6. Run the frontend
+
+With the backend running:
+
+```bash
+cd frontend
+npm install
+cp .env.example .env.local     # optional; defaults to http://localhost:8080/api
+npm run dev                    # http://localhost:5173
+```
+
+The frontend pins port **5173**, which is the origin allowed by backend CORS.
+Use `npm run build` for a production build and `npm run test:e2e` for the
+Playwright suite (requires the backend, PostgreSQL, and
+`npx playwright install chromium`). See [frontend/README.md](frontend/README.md)
+for routes, architecture, role rules, and test details.
 
 ## API documentation
 
