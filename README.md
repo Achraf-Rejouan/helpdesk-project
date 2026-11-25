@@ -87,6 +87,7 @@ ADMIN_PASSWORD=<a development password>
 
 `backend/.env` is gitignored. The application reads
 `app.jwt.secret=${JWT_SECRET}`; the secret is never hardcoded in source.
+Generate your own JWT_SECRET with `openssl rand -base64 48`; never commit .env.
 
 ## 3. Run the backend
 
@@ -111,6 +112,10 @@ If `ADMIN_EMAIL` / `ADMIN_PASSWORD` are not set, the development defaults are:
 - password: `Admin12345`
 
 These credentials are for local development only.
+
+> **LOCAL DEVELOPMENT ONLY:** the default admin credentials above, the
+> `helpdesk123` PostgreSQL password in `docker-compose.yml`, and all other
+> example values in this repository must be replaced before any real deployment.
 
 ## 4. Run the API tests
 
